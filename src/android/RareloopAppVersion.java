@@ -64,8 +64,17 @@ public class RareloopAppVersion extends CordovaPlugin {
                 PackageManager packageManager = this.cordova.getActivity().getPackageManager();
 
                 JSONObject r = new JSONObject();
+                
+                List<String> validInstallers = new ArrayList<>(Arrays.asList("com.android.vending", "com.google.android.feedback"));
+
+                // The package name of the app that has installed your app
+                final String installer = packageManager.getInstallerPackageName(context.getPackageName());
+
+                
                 r.put("version", packageManager.getPackageInfo(this.cordova.getActivity().getPackageName(), 0).versionName);
                 r.put("build", packageManager.getPackageInfo(this.cordova.getActivity().getPackageName(), 0).versionCode);
+                // true if your app has been downloaded from Play Store 
+                r.put("isFromPlayStore", installer != null && validInstallers.contains(installer));
 
                 callbackContext.success(r);
             } catch (NameNotFoundException e) {
